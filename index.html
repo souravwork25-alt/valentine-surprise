@@ -23,10 +23,11 @@ body{
     justify-content:center;
     overflow:hidden;
     transition:background 3s ease;
+    padding:10px;
 }
 
 button{
-    padding:14px 28px;
+    padding:14px 20px;
     border-radius:30px;
     border:none;
     cursor:pointer;
@@ -44,6 +45,7 @@ input{
     border:none;
     font-size:16px;
     width:220px;
+    max-width:90%;
     text-align:center;
 }
 #hint{
@@ -65,7 +67,7 @@ input{
 .card{
     display:none;
     background:rgba(255,255,255,.18);
-    padding:28px;
+    padding:24px;
     border-radius:20px;
     max-width:420px;
     width:100%;
@@ -115,9 +117,6 @@ h1{font-size:clamp(22px,5vw,28px)}
     pointer-events:none;
 }
 
-.blush{animation:blush .3s}
-@keyframes blush{50%{background:#ffb6c1}}
-
 .heart{
     position:absolute;
     bottom:-20px;
@@ -138,19 +137,19 @@ h1{font-size:clamp(22px,5vw,28px)}
 }
 
 /* ============ ENDING ============ */
-#message,#counter,#finalMessage,#calmText,#thankYou,#loveNote{
+#message,#counter,#finalMessage,#calmText,#thankYou{
     margin-top:12px;
     font-weight:bold;
 }
-#calmText,#thankYou,#loveNote{display:none}
+#calmText,#thankYou{display:none}
 
 .calm{
     background:linear-gradient(135deg,#ffd1dc,#ffb7c5);
 }
 
-/* ============ RESPONSIVE ============ */
+/* ============ MOBILE ============ */
 @media(max-width:480px){
-    button{width:100%;max-width:260px}
+    button{width:100%}
     #noBtn{position:fixed}
 }
 </style>
@@ -174,7 +173,7 @@ h1{font-size:clamp(22px,5vw,28px)}
 
 <!-- CARD -->
 <div class="card" id="mainCard">
-    <h1 id="question">Will you be my Valentine? 💖</h1>
+    <h1>Will you be my Valentine? 💖</h1>
 
     <button id="yesBtn">Yes 💕</button>
     <button id="noBtn">No 😢</button>
@@ -187,159 +186,141 @@ h1{font-size:clamp(22px,5vw,28px)}
 
     <div id="calmText">My heart is calm now ❤️</div>
     <div id="thankYou">Thank you for choosing me 🤍</div>
-    <div id="loveNote">❤️ I love you more than words ❤️</div>
 
     <div id="whisper" class="whisper">please don’t click me 🥺</div>
 </div>
 
 <script>
 /* ===== CONFIG ===== */
-const PASSWORD = "Us_1402";
+const PASSWORD="Us_1402";
 
 /* ===== ELEMENTS ===== */
-const lockScreen = document.getElementById("lockScreen");
-const mainCard = document.getElementById("mainCard");
-const unlockBtn = document.getElementById("unlockBtn");
-const passwordInput = document.getElementById("password");
-const error = document.getElementById("error");
+const lockScreen=lockScreen=document.getElementById("lockScreen");
+const mainCard=document.getElementById("mainCard");
+const unlockBtn=document.getElementById("unlockBtn");
+const passwordInput=document.getElementById("password");
+const error=document.getElementById("error");
 
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const kissBtn = document.getElementById("kissBtn");
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const kissBtn=document.getElementById("kissBtn");
 
-const message = document.getElementById("message");
-const counter = document.getElementById("counter");
-const finalMessage = document.getElementById("finalMessage");
-const calmText = document.getElementById("calmText");
-const thankYou = document.getElementById("thankYou");
-const loveNote = document.getElementById("loveNote");
+const message=document.getElementById("message");
+const counter=document.getElementById("counter");
+const finalMessage=document.getElementById("finalMessage");
+const calmText=document.getElementById("calmText");
+const thankYou=document.getElementById("thankYou");
 
-const bgMusic = document.getElementById("bgMusic");
-const heartbeat = document.getElementById("heartbeat");
-const yesSound = document.getElementById("yesSound");
-const whisper = document.getElementById("whisper");
+const bgMusic=document.getElementById("bgMusic");
+const heartbeat=document.getElementById("heartbeat");
+const yesSound=document.getElementById("yesSound");
+const whisper=document.getElementById("whisper");
 
 /* ===== UNLOCK ===== */
-unlockBtn.onclick = () => {
-    if(passwordInput.value === PASSWORD){
-        lockScreen.style.display="none";
-        mainCard.style.display="block";
-        bgMusic.play();
-    } else {
-        error.innerText="Wrong password 😜";
-    }
+unlockBtn.onclick=()=>{
+ if(passwordInput.value===PASSWORD){
+  lockScreen.style.display="none";
+  mainCard.style.display="block";
+  bgMusic.play();
+ }else error.innerText="Wrong password 😜";
 };
 
 /* ===== NO BUTTON ===== */
 const noTexts=[
-    "No 😢",
-    "Are you sure?",
-    "Really?",
-    "Think again 😳",
-    "Pleaseeee 🥺",
-    "Don’t break my heart 💔",
-    "Okay fine… YES is better 😌"
+ "No 😢","Are you sure?","Really?","Think again 😳",
+ "Pleaseeee 🥺","Don’t break my heart 💔","Okay fine… YES is better 😌"
 ];
-let noIndex=0, escapeCount=0, yesScale=1;
+let noIndex=0,escapeCount=0,yesScale=1;
 
 function moveNo(){
-    escapeCount++;
+ escapeCount++;
+ const r=mainCard.getBoundingClientRect();
+ noBtn.style.left=Math.random()*(r.width-noBtn.offsetWidth-10)+"px";
+ noBtn.style.top=Math.random()*(r.height-noBtn.offsetHeight-10)+"px";
 
-    const cardRect = mainCard.getBoundingClientRect();
-    const maxX = cardRect.width - noBtn.offsetWidth - 10;
-    const maxY = cardRect.height - noBtn.offsetHeight - 10;
+ if(noIndex<noTexts.length-1){
+  noIndex++; noBtn.innerText=noTexts[noIndex];
+ }
 
-    noBtn.style.left = Math.random()*maxX+"px";
-    noBtn.style.top = Math.random()*maxY+"px";
+ counter.innerText=`No escaped ${escapeCount} times 😄`;
 
-    if(noIndex < noTexts.length-1){
-        noIndex++;
-        noBtn.innerText=noTexts[noIndex];
-    }
+ yesScale+=.15;
+ yesBtn.style.transform=`scale(${yesScale})`;
 
-    counter.innerText=`No escaped ${escapeCount} times 😄`;
+ if(escapeCount>=2) noBtn.classList.add("nervous");
+ if(escapeCount>=5){
+  yesBtn.classList.add("glow");
+  heartbeat.play();
+  heartbeat.playbackRate=Math.min(2.2,1.2+escapeCount*.12);
+ }
+ if(noIndex===noTexts.length-1){
+  noBtn.disabled=true;
+  noBtn.style.opacity=.6;
+ }
 
-    yesScale+=0.15;
-    yesBtn.style.transform=`scale(${yesScale})`;
-
-    if(escapeCount>=2) noBtn.classList.add("nervous");
-
-    if(escapeCount>=5){
-        yesBtn.classList.add("glow");
-        heartbeat.play();
-        const speed=Math.max(0.4,1.2-escapeCount*0.1);
-        yesBtn.style.setProperty("--glowSpeed",speed+"s");
-        heartbeat.playbackRate=Math.min(2.2,1.2+escapeCount*0.12);
-    }
-
-    if(noIndex===noTexts.length-1){
-        noBtn.disabled=true;
-        noBtn.style.opacity="0.6";
-    }
-
-    whisper.style.opacity=1;
-    setTimeout(()=>whisper.style.opacity=0,800);
+ whisper.style.opacity=1;
+ setTimeout(()=>whisper.style.opacity=0,800);
 }
 
-noBtn.onmouseenter = moveNo;
-noBtn.ontouchstart = e => { e.preventDefault(); moveNo(); };
-noBtn.onclick = moveNo;
+noBtn.onmouseenter=moveNo;
+noBtn.ontouchstart=e=>{e.preventDefault();moveNo();};
+noBtn.onclick=moveNo;
 
-/* ===== YES CLICK ===== */
-yesBtn.onclick = () => {
-    yesSound.play();
+/* ===== YES ===== */
+yesBtn.onclick=()=>{
+ yesSound.play();
+ heartbeat.pause(); heartbeat.currentTime=0;
 
-    heartbeat.playbackRate=0.6;
-    setTimeout(()=>{heartbeat.pause();heartbeat.currentTime=0;},1200);
+ yesBtn.style.display="none";
+ noBtn.style.display="none";
+ kissBtn.style.display="inline-block";
 
-    yesBtn.style.display="none";
-    noBtn.style.display="none";
-    kissBtn.style.display="inline-block";
+ message.innerHTML=`I fell in love with your clumsiness,<br>
+ your baby acts, and your heart ❤️<br><br>
+ <b>She said YES on:</b><br>${new Date().toLocaleString()}`;
 
-    message.innerHTML=`I fell in love with your clumsiness,<br>
-    your baby acts, and your heart ❤️<br><br>
-    <b>She said YES on:</b><br>${new Date().toLocaleString()}`;
-
-    finalMessage.innerText="You never really had a choice 😘";
-
-    setTimeout(()=>{
-        document.body.classList.add("calm");
-        calmText.style.display="block";
-    },1500);
-
-    setTimeout(()=>{
-        thankYou.style.display="block";
-    },3000);
+ finalMessage.innerText="You never really had a choice 😘";
 };
 
-/* ===== KISS BUTTON ===== */
-kissBtn.onclick = () => {
-    message.innerHTML += "<br><br>💋 Kiss received!";
-    navigator.vibrate?.(200);
+/* ===== KISS (FINAL FLOW) ===== */
+let whatsappOpened=false;
+kissBtn.onclick=()=>{
+ kissBtn.disabled=true;
+ navigator.vibrate?.(200);
+ message.innerHTML+="<br><br>💋 Kiss received!";
 
-    for(let i=0;i<15;i++){
-        const h=document.createElement("div");
-        h.className="explode";
-        h.innerText="💖";
-        h.style.left="50vw";
-        h.style.top="60vh";
-        h.style.setProperty("--x",`${Math.random()*200-100}px`);
-        h.style.setProperty("--y",`${Math.random()*200-100}px`);
-        document.body.appendChild(h);
-        setTimeout(()=>h.remove(),1200);
-    }
+ for(let i=0;i<15;i++){
+  const h=document.createElement("div");
+  h.className="explode";
+  h.innerText="💖";
+  h.style.left="50vw";h.style.top="60vh";
+  h.style.setProperty("--x",`${Math.random()*200-100}px`);
+  h.style.setProperty("--y",`${Math.random()*200-100}px`);
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),1200);
+ }
+
+ setTimeout(()=>{
+  document.body.classList.add("calm");
+  calmText.style.display="block";
+ },1200);
+
+ setTimeout(()=>{
+  thankYou.style.display="block";
+ },2200);
+
+ setTimeout(()=>{
+  if(!whatsappOpened){
+   whatsappOpened=true;
+   window.open(
+    "https://wa.me/?text="+encodeURIComponent(
+     "Hey ❤️\nI’m really happy you chose me 🤍"
+    ),
+    "_blank"
+   );
+  }
+ },3200);
 };
-
-/* ===== LONG PRESS LOVE NOTE ===== */
-let pressTimer;
-yesBtn.addEventListener("mousedown",startPress);
-yesBtn.addEventListener("touchstart",startPress);
-function startPress(){
-    pressTimer=setTimeout(()=>loveNote.style.display="block",1000);
-}
-["mouseup","mouseleave","touchend"].forEach(ev=>{
-    yesBtn.addEventListener(ev,()=>clearTimeout(pressTimer));
-});
 </script>
 
 </body>
