@@ -6,8 +6,12 @@
 <title>Only For You ❤️</title>
 
 <style>
-:root { --pink:#ff2e63; }
+:root{
+    --pink:#ff2e63;
+    --glowSpeed:1.2s;
+}
 
+/* ============ BASE ============ */
 body{
     margin:0;
     min-height:100vh;
@@ -15,34 +19,60 @@ body{
     font-family:'Segoe UI',sans-serif;
     color:white;
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
     overflow:hidden;
+    transition:background 3s ease;
 }
 
-/* PASSWORD */
-#lockScreen{text-align:center}
-input{
-    padding:14px;border-radius:20px;border:none;font-size:16px;
-    text-align:center;outline:none;width:220px;
-}
 button{
-    padding:14px 28px;border-radius:30px;border:none;
-    cursor:pointer;font-size:16px;margin:8px;
-    transition:.3s;
+    padding:14px 28px;
+    border-radius:30px;
+    border:none;
+    cursor:pointer;
+    font-size:16px;
+    margin:8px;
+    transition:transform .3s;
 }
 button:hover{transform:scale(1.08)}
+
+/* ============ PASSWORD ============ */
+#lockScreen{text-align:center}
+input{
+    padding:14px;
+    border-radius:20px;
+    border:none;
+    font-size:16px;
+    width:220px;
+    text-align:center;
+}
+#hint{
+    margin-top:12px;
+    font-size:14px;
+    color:#ffe4ec;
+    opacity:0;
+    animation:hintFade 4s infinite;
+}
+@keyframes hintFade{
+    0%,100%{opacity:0}
+    20%,80%{opacity:1}
+}
+.cursor{animation:blink 1s infinite}
+@keyframes blink{50%{opacity:0}}
 #unlockBtn{background:var(--pink);color:white}
 
-/* CARD */
+/* ============ CARD ============ */
 .card{
     display:none;
     background:rgba(255,255,255,.18);
-    padding:28px;border-radius:20px;
-    box-shadow:0 15px 40px rgba(0,0,0,.3);
+    padding:28px;
+    border-radius:20px;
+    max-width:420px;
+    width:100%;
     text-align:center;
-    max-width:420px;width:100%;
-    position:relative;z-index:5;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 15px 40px rgba(0,0,0,.3);
 }
 
 h1{font-size:clamp(22px,5vw,28px)}
@@ -50,41 +80,15 @@ h1{font-size:clamp(22px,5vw,28px)}
 #yesBtn{background:var(--pink);color:white;font-weight:bold}
 #noBtn{background:white;color:var(--pink);position:absolute}
 
-/* EXTRA */
-#kissBtn,#screenshotBtn,#shareBtn{display:none;color:white;font-weight:bold}
-#kissBtn{background:#ff69b4}
-#screenshotBtn{background:#6a5acd;width:100%}
-#shareBtn{background:#25D366;width:100%}
-#actions{margin-top:15px}
-
-#warning,#counter,#finalMessage{
-    margin-top:10px;font-weight:bold;color:#fffacd;
+/* Kiss button */
+#kissBtn{
+    display:none;
+    background:#ff69b4;
+    color:white;
+    font-weight:bold;
 }
 
-/* HEARTS */
-.heart{
-    position:absolute;bottom:-20px;
-    animation:floatUp 6s linear infinite;
-}
-@keyframes floatUp{
-    from{transform:translateY(0);opacity:1}
-    to{transform:translateY(-120vh);opacity:0}
-}
-
-/* EXPLOSIONS */
-.explode{
-    position:absolute;font-size:22px;
-    animation:explode 1.2s ease-out forwards;
-}
-@keyframes explode{
-    from{transform:scale(0);opacity:1}
-    to{
-        transform:translate(var(--x),var(--y)) scale(1.4);
-        opacity:0;
-    }
-}
-
-/* NO BUTTON FX */
+/* ============ EFFECTS ============ */
 @keyframes shake{
     0%,100%{transform:translate(0)}
     25%{transform:translate(-2px,2px)}
@@ -92,6 +96,14 @@ h1{font-size:clamp(22px,5vw,28px)}
     75%{transform:translate(-2px,-2px)}
 }
 .nervous{animation:shake .4s infinite}
+
+.glow{
+    animation:glowPulse var(--glowSpeed) infinite alternate;
+}
+@keyframes glowPulse{
+    from{box-shadow:0 0 10px rgba(255,46,99,.6)}
+    to{box-shadow:0 0 30px rgba(255,46,99,1)}
+}
 
 .whisper{
     position:absolute;
@@ -103,40 +115,40 @@ h1{font-size:clamp(22px,5vw,28px)}
     pointer-events:none;
 }
 
-/* BLUSH */
 .blush{animation:blush .3s}
 @keyframes blush{50%{background:#ffb6c1}}
 
-/* YES CENTER */
-.centered{
-    position:fixed!important;
-    left:50%!important;
-    top:50%!important;
-    transform:translate(-50%,-50%) scale(1.6)!important;
-    z-index:999;
+.heart{
+    position:absolute;
+    bottom:-20px;
+    animation:floatUp 6s linear infinite;
+}
+@keyframes floatUp{
+    to{transform:translateY(-120vh);opacity:0}
 }
 
-/* CONFETTI */
-.confetti{
-    position:fixed;top:-10px;
-    animation:fall 3s linear forwards;
-}
-@keyframes fall{
-    to{transform:translateY(110vh) rotate(720deg);opacity:0}
-}
-
-/* LOVE NOTE */
-#loveNote{
-    display:none;
-    margin-top:20px;
+.explode{
+    position:absolute;
     font-size:22px;
-    animation:fadeIn 1s forwards;
+    animation:explode 1.2s forwards;
 }
-@keyframes fadeIn{
-    from{opacity:0;transform:scale(.9)}
-    to{opacity:1;transform:scale(1)}
+@keyframes explode{
+    from{transform:scale(0);opacity:1}
+    to{transform:translate(var(--x),var(--y)) scale(1.4);opacity:0}
 }
 
+/* ============ ENDING ============ */
+#message,#counter,#finalMessage,#calmText,#thankYou,#loveNote{
+    margin-top:12px;
+    font-weight:bold;
+}
+#calmText,#thankYou,#loveNote{display:none}
+
+.calm{
+    background:linear-gradient(135deg,#ffd1dc,#ffb7c5);
+}
+
+/* ============ RESPONSIVE ============ */
 @media(max-width:480px){
     button{width:100%;max-width:260px}
     #noBtn{position:fixed}
@@ -146,157 +158,188 @@ h1{font-size:clamp(22px,5vw,28px)}
 
 <body>
 
-<audio id="bgMusic" loop>
-<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
-</audio>
+<!-- AUDIO -->
+<audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<audio id="heartbeat" loop src="https://cdn.pixabay.com/download/audio/2022/10/19/audio_1c8d7d4f76.mp3"></audio>
+<audio id="yesSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9c6c7c3b6a.mp3"></audio>
 
 <!-- PASSWORD -->
 <div id="lockScreen">
-<h2>🔒 Secret Valentine Page</h2>
-<p>Private page 🔐</p>
-<input type="password" id="password" placeholder="Enter password"><br>
-<button id="unlockBtn">Unlock ❤️</button>
-<p id="error"></p>
+    <h2>🔒 Secret Page</h2>
+    <input id="password" type="password" placeholder="Enter password"><br>
+    <button id="unlockBtn">Unlock ❤️</button>
+    <div id="hint">A secret only meant for us<span class="cursor">|</span></div>
+    <p id="error"></p>
 </div>
 
 <!-- CARD -->
 <div class="card" id="mainCard">
-<h1 id="question">Will you be my Valentine? 💖</h1>
+    <h1 id="question">Will you be my Valentine? 💖</h1>
 
-<button id="yesBtn">Yes 💕</button>
-<button id="noBtn">No 😢</button>
+    <button id="yesBtn">Yes 💕</button>
+    <button id="noBtn">No 😢</button>
 
-<div id="message"></div>
-<div id="warning"></div>
-<div id="counter"></div>
-<div id="finalMessage"></div>
+    <div id="message"></div>
+    <div id="counter"></div>
+    <div id="finalMessage"></div>
 
-<button id="kissBtn">Kiss 😘</button>
+    <button id="kissBtn">Kiss 😘</button>
 
-<div id="actions">
-<button id="screenshotBtn">Save This Moment 📸</button>
-<button id="shareBtn">Share This Love 💚</button>
+    <div id="calmText">My heart is calm now ❤️</div>
+    <div id="thankYou">Thank you for choosing me 🤍</div>
+    <div id="loveNote">❤️ I love you more than words ❤️</div>
+
+    <div id="whisper" class="whisper">please don’t click me 🥺</div>
 </div>
-
-<div id="loveNote">
-❤️ I love you more than words, more than clicks, more than forever ❤️
-</div>
-
-<div id="whisper" class="whisper">please don’t click me 🥺</div>
-</div>
-
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
-const PASSWORD="Us_1402";
+/* ===== CONFIG ===== */
+const PASSWORD = "Us_1402";
 
-/* ELEMENTS */
-const lockScreen=document.getElementById("lockScreen");
-const mainCard=document.getElementById("mainCard");
-const unlockBtn=document.getElementById("unlockBtn");
-const passwordInput=document.getElementById("password");
-const error=document.getElementById("error");
-const music=document.getElementById("bgMusic");
+/* ===== ELEMENTS ===== */
+const lockScreen = document.getElementById("lockScreen");
+const mainCard = document.getElementById("mainCard");
+const unlockBtn = document.getElementById("unlockBtn");
+const passwordInput = document.getElementById("password");
+const error = document.getElementById("error");
 
-const yesBtn=document.getElementById("yesBtn");
-const noBtn=document.getElementById("noBtn");
-const whisper=document.getElementById("whisper");
-const counter=document.getElementById("counter");
-const finalMessage=document.getElementById("finalMessage");
-const message=document.getElementById("message");
-const kissBtn=document.getElementById("kissBtn");
-const screenshotBtn=document.getElementById("screenshotBtn");
-const shareBtn=document.getElementById("shareBtn");
-const loveNote=document.getElementById("loveNote");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const kissBtn = document.getElementById("kissBtn");
 
-/* UNLOCK */
-unlockBtn.onclick=()=>{
- if(passwordInput.value===PASSWORD){
-  lockScreen.style.display="none";
-  mainCard.style.display="block";
-  music.play();
- }else error.innerText="Wrong password 😜";
+const message = document.getElementById("message");
+const counter = document.getElementById("counter");
+const finalMessage = document.getElementById("finalMessage");
+const calmText = document.getElementById("calmText");
+const thankYou = document.getElementById("thankYou");
+const loveNote = document.getElementById("loveNote");
+
+const bgMusic = document.getElementById("bgMusic");
+const heartbeat = document.getElementById("heartbeat");
+const yesSound = document.getElementById("yesSound");
+const whisper = document.getElementById("whisper");
+
+/* ===== UNLOCK ===== */
+unlockBtn.onclick = () => {
+    if(passwordInput.value === PASSWORD){
+        lockScreen.style.display="none";
+        mainCard.style.display="block";
+        bgMusic.play();
+    } else {
+        error.innerText="Wrong password 😜";
+    }
 };
 
-/* FLOATING HEARTS */
-setInterval(()=>{
- let h=document.createElement("div");
- h.className="heart";h.innerText="❤️";
- h.style.left=Math.random()*100+"vw";
- document.body.appendChild(h);
- setTimeout(()=>h.remove(),6000);
-},450);
+/* ===== NO BUTTON ===== */
+const noTexts=[
+    "No 😢",
+    "Are you sure?",
+    "Really?",
+    "Think again 😳",
+    "Pleaseeee 🥺",
+    "Don’t break my heart 💔",
+    "Okay fine… YES is better 😌"
+];
+let noIndex=0, escapeCount=0, yesScale=1;
 
-/* NO BUTTON */
-let escapeCount=0, yesScale=1;
 function moveNo(){
- escapeCount++;
- document.body.classList.add("blush");
- setTimeout(()=>document.body.classList.remove("blush"),300);
+    escapeCount++;
 
- noBtn.style.left=Math.random()*(innerWidth-120)+"px";
- noBtn.style.top=Math.random()*(innerHeight-120)+"px";
+    const cardRect = mainCard.getBoundingClientRect();
+    const maxX = cardRect.width - noBtn.offsetWidth - 10;
+    const maxY = cardRect.height - noBtn.offsetHeight - 10;
 
- whisper.style.opacity=1;
- setTimeout(()=>whisper.style.opacity=0,800);
+    noBtn.style.left = Math.random()*maxX+"px";
+    noBtn.style.top = Math.random()*maxY+"px";
 
- counter.innerText=`No escaped ${escapeCount} times 😄`;
+    if(noIndex < noTexts.length-1){
+        noIndex++;
+        noBtn.innerText=noTexts[noIndex];
+    }
 
- yesScale+=0.15;
- yesBtn.style.transform=`scale(${yesScale})`;
+    counter.innerText=`No escaped ${escapeCount} times 😄`;
 
- if(escapeCount>=2) noBtn.classList.add("nervous");
- navigator.vibrate?.(80);
+    yesScale+=0.15;
+    yesBtn.style.transform=`scale(${yesScale})`;
+
+    if(escapeCount>=2) noBtn.classList.add("nervous");
+
+    if(escapeCount>=5){
+        yesBtn.classList.add("glow");
+        heartbeat.play();
+        const speed=Math.max(0.4,1.2-escapeCount*0.1);
+        yesBtn.style.setProperty("--glowSpeed",speed+"s");
+        heartbeat.playbackRate=Math.min(2.2,1.2+escapeCount*0.12);
+    }
+
+    if(noIndex===noTexts.length-1){
+        noBtn.disabled=true;
+        noBtn.style.opacity="0.6";
+    }
+
+    whisper.style.opacity=1;
+    setTimeout(()=>whisper.style.opacity=0,800);
 }
-noBtn.onmouseenter=moveNo;
-noBtn.ontouchstart=e=>{e.preventDefault();moveNo();};
-noBtn.onclick=moveNo;
 
-/* YES CLICK */
-yesBtn.onclick=()=>{
- document.getElementById("question").innerText="SHE SAID YES!!! 💖🥹";
- message.innerHTML=`I fell in love with your clumsiness,<br>
- your baby acts, and your heart ❤️<br><br>
- <b>💖 She said YES on:</b><br>${new Date().toLocaleString()}`;
- yesBtn.classList.add("centered");
- noBtn.style.display="none";
- kissBtn.style.display=screenshotBtn.style.display=shareBtn.style.display="inline-block";
- finalMessage.innerText="You never really had a choice 😘";
- navigator.vibrate?.([200,100,200,300]);
+noBtn.onmouseenter = moveNo;
+noBtn.ontouchstart = e => { e.preventDefault(); moveNo(); };
+noBtn.onclick = moveNo;
+
+/* ===== YES CLICK ===== */
+yesBtn.onclick = () => {
+    yesSound.play();
+
+    heartbeat.playbackRate=0.6;
+    setTimeout(()=>{heartbeat.pause();heartbeat.currentTime=0;},1200);
+
+    yesBtn.style.display="none";
+    noBtn.style.display="none";
+    kissBtn.style.display="inline-block";
+
+    message.innerHTML=`I fell in love with your clumsiness,<br>
+    your baby acts, and your heart ❤️<br><br>
+    <b>She said YES on:</b><br>${new Date().toLocaleString()}`;
+
+    finalMessage.innerText="You never really had a choice 😘";
+
+    setTimeout(()=>{
+        document.body.classList.add("calm");
+        calmText.style.display="block";
+    },1500);
+
+    setTimeout(()=>{
+        thankYou.style.display="block";
+    },3000);
 };
 
-/* LONG PRESS LOVE NOTE */
+/* ===== KISS BUTTON ===== */
+kissBtn.onclick = () => {
+    message.innerHTML += "<br><br>💋 Kiss received!";
+    navigator.vibrate?.(200);
+
+    for(let i=0;i<15;i++){
+        const h=document.createElement("div");
+        h.className="explode";
+        h.innerText="💖";
+        h.style.left="50vw";
+        h.style.top="60vh";
+        h.style.setProperty("--x",`${Math.random()*200-100}px`);
+        h.style.setProperty("--y",`${Math.random()*200-100}px`);
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),1200);
+    }
+};
+
+/* ===== LONG PRESS LOVE NOTE ===== */
 let pressTimer;
 yesBtn.addEventListener("mousedown",startPress);
 yesBtn.addEventListener("touchstart",startPress);
-function startPress(e){
- e.preventDefault();
- pressTimer=setTimeout(()=>{
-  loveNote.style.display="block";
-  navigator.vibrate?.([100,50,200]);
- },1000);
+function startPress(){
+    pressTimer=setTimeout(()=>loveNote.style.display="block",1000);
 }
 ["mouseup","mouseleave","touchend"].forEach(ev=>{
- yesBtn.addEventListener(ev,()=>clearTimeout(pressTimer));
+    yesBtn.addEventListener(ev,()=>clearTimeout(pressTimer));
 });
-
-/* SCREENSHOT */
-screenshotBtn.onclick=()=>{
- html2canvas(document.body).then(c=>{
-  let a=document.createElement("a");
-  a.download="our_valentine_moment.png";
-  a.href=c.toDataURL();
-  a.click();
- });
-};
-
-/* SHARE */
-shareBtn.onclick=()=>{
- let txt=encodeURIComponent(
-  "💖 She said YES! 💖\nFrom clumsy smiles to baby acts — love won ❤️\n\n"+location.href
- );
- window.open("https://wa.me/?text="+txt,"_blank");
-};
 </script>
 
 </body>
