@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Only For You ❤️</title>
+
+<style>
+:root { --pink:#ff2e63; }
+
+body{
+    margin:0;
+    min-height:100vh;
+    background:linear-gradient(135deg,#ff4e8d,#ff9a9e);
+    font-family:'Segoe UI',sans-serif;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+/* ---------- PASSWORD ---------- */
+#lockScreen{text-align:center}
+input{
+    padding:14px;border-radius:20px;border:none;font-size:16px;
+    text-align:center;outline:none;width:220px;
+}
+button{
+    padding:14px 28px;border-radius:30px;border:none;
+    cursor:pointer;font-size:16px;margin:8px;
+    transition:.3s;
+}
+button:hover{transform:scale(1.08)}
+#unlockBtn{background:var(--pink);color:white}
+
+/* ---------- CARD ---------- */
+.card{
+    display:none;
+    background:rgba(255,255,255,.18);
+    padding:28px;border-radius:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,.3);
+    text-align:center;
+    max-width:420px;width:100%;
+    position:relative;z-index:5;
+}
+
+h1{font-size:clamp(22px,5vw,28px)}
+
+#yesBtn{background:var(--pink);color:white;font-weight:bold}
+#noBtn{background:white;color:var(--pink);position:absolute}
+
+/* ---------- EXTRA ---------- */
+#kissBtn,#screenshotBtn,#shareBtn{display:none;color:white;font-weight:bold}
+#kissBtn{background:#ff69b4}
+#screenshotBtn{background:#6a5acd;width:100%}
+#shareBtn{background:#25D366;width:100%}
+#actions{margin-top:15px}
+
+#warning,#counter,#finalMessage{
+    margin-top:10px;font-weight:bold;color:#fffacd;
+}
+
+/* ---------- HEARTS ---------- */
+.heart{
+    position:absolute;bottom:-20px;
+    animation:floatUp 6s linear infinite;
+}
+@keyframes floatUp{
+    from{transform:translateY(0);opacity:1}
+    to{transform:translateY(-120vh);opacity:0}
+}
+
+/* ---------- EXPLOSIONS ---------- */
+.explode{
+    position:absolute;font-size:22px;
+    animation:explode 1.2s ease-out forwards;
+}
+@keyframes explode{
+    from{transform:scale(0);opacity:1}
+    to{
+        transform:translate(var(--x),var(--y)) scale(1.4);
+        opacity:0;
+    }
+}
+
+/* ---------- NO BUTTON FX ---------- */
+@keyframes shake{
+    0%,100%{transform:translate(0)}
+    25%{transform:translate(-2px,2px)}
+    50%{transform:translate(2px,-2px)}
+    75%{transform:translate(-2px,-2px)}
+}
+.nervous{animation:shake .4s infinite}
+
+.whisper{
+    position:absolute;
+    background:rgba(0,0,0,.6);
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    opacity:0;
+    pointer-events:none;
+}
+
+/* ---------- BLUSH ---------- */
+.blush{animation:blush .3s}
+@keyframes blush{
+    50%{background:#ffb6c1}
+}
+
+/* ---------- YES CENTER ---------- */
+.centered{
+    position:fixed!important;
+    left:50%!important;
+    top:50%!important;
+    transform:translate(-50%,-50%) scale(1.6)!important;
+    z-index:999;
+}
+
+/* ---------- CONFETTI ---------- */
+.confetti{
+    position:fixed;top:-10px;
+    animation:fall 3s linear forwards;
+}
+@keyframes fall{
+    to{transform:translateY(110vh) rotate(720deg);opacity:0}
+}
+
+/* ---------- LOVE NOTE ---------- */
+#loveNote{
+    display:none;
+    margin-top:20px;
+    font-size:22px;
+    animation:fadeIn 1s forwards;
+}
+@keyframes fadeIn{
+    from{opacity:0;transform:scale(.9)}
+    to{opacity:1;transform:scale(1)}
+}
+
+@media(max-width:480px){
+    button{width:100%;max-width:260px}
+    #noBtn{position:fixed}
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" loop>
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+</audio>
+
+<!-- PASSWORD -->
+<div id="lockScreen">
+<h2>🔒 Secret Valentine Page</h2>
+<p>Only my baby can enter 💕</p>
+<input type="password" id="password" placeholder="Enter password"><br>
+<button id="unlockBtn">Unlock ❤️</button>
+<p id="error"></p>
+</div>
+
+<!-- CARD -->
+<div class="card" id="mainCard">
+<h1 id="question">Will you be my Valentine? 💖</h1>
+
+<button id="yesBtn">Yes 💕</button>
+<button id="noBtn">No 😢</button>
+
+<div id="message"></div>
+<div id="warning"></div>
+<div id="counter"></div>
+<div id="finalMessage"></div>
+
+<button id="kissBtn">Kiss 😘</button>
+
+<div id="actions">
+<button id="screenshotBtn">Save This Moment 📸</button>
+<button id="shareBtn">Share This Love 💚</button>
+</div>
+
+<div id="loveNote">
+❤️ I love you more than words, more than clicks, more than forever ❤️
+</div>
+
+<div id="whisper" class="whisper">please don’t click me 🥺</div>
+</div>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script>
+const PASSWORD="mybaby";
+const lockScreen=lockScreen, mainCard=mainCard, music=bgMusic;
+
+unlockBtn.onclick=()=>{
+ if(password.value===PASSWORD){
+  lockScreen.style.display="none";
+  mainCard.style.display="block";
+  music.play();
+ }else error.innerText="Wrong password 😜";
+};
+
+// Floating hearts
+setInterval(()=>{
+ let h=document.createElement("div");
+ h.className="heart";h.innerText="❤️";
+ h.style.left=Math.random()*100+"vw";
+ document.body.appendChild(h);
+ setTimeout(()=>h.remove(),6000);
+},450);
+
+// NO BUTTON BEHAVIOR
+let escapeCount=0, yesScale=1;
+function moveNo(){
+ escapeCount++;
+ document.body.classList.add("blush");
+ setTimeout(()=>document.body.classList.remove("blush"),300);
+
+ const maxX=innerWidth-noBtn.offsetWidth-10;
+ const maxY=innerHeight-noBtn.offsetHeight-10;
+ noBtn.style.left=Math.random()*maxX+"px";
+ noBtn.style.top=Math.random()*maxY+"px";
+
+ whisper.style.opacity=1;
+ setTimeout(()=>whisper.style.opacity=0,800);
+
+ counter.innerText=`No escaped ${escapeCount} times 😄`;
+
+ yesScale+=.15;
+ yesBtn.style.transform=`scale(${yesScale})`;
+
+ if(escapeCount>=2) noBtn.classList.add("nervous");
+ navigator.vibrate?.(80);
+}
+noBtn.onmouseenter=moveNo;
+noBtn.ontouchstart=e=>{e.preventDefault();moveNo();};
+noBtn.onclick=moveNo;
+
+// YES CLICK
+yesBtn.onclick=()=>{
+ question.innerText="SHE SAID YES!!! 💖🥹";
+ message.innerHTML=`I fell in love with your clumsiness,<br>
+ your baby acts, and your heart ❤️<br><br>
+ <b>💖 She said YES on:</b><br>${new Date().toLocaleString()}`;
+ yesBtn.classList.add("centered");
+ noBtn.style.display="none";
+ kissBtn.style.display=screenshotBtn.style.display=shareBtn.style.display="inline-block";
+ finalMessage.innerText="You never really had a choice 😘";
+ confetti();fireworks();
+ navigator.vibrate?.([200,100,200,300]);
+};
+
+// KISS
+kissBtn.onclick=()=>{
+ message.innerHTML+="<br><br><b>*Kiss received!* 💋❤️</b>";
+ navigator.vibrate?.(300);
+};
+
+// LONG PRESS LOVE NOTE
+let pressTimer;
+["mousedown","touchstart"].forEach(e=>
+ yesBtn.addEventListener(e,ev=>{
+  ev.preventDefault();
+  pressTimer=setTimeout(()=>{
+    loveNote.style.display="block";
+    navigator.vibrate?.([100,50,200]);
+  },1000);
+ })
+);
+["mouseup","mouseleave","touchend"].forEach(e=>
+ yesBtn.addEventListener(e,()=>clearTimeout(pressTimer))
+);
+
+// CONFETTI & FIREWORKS
+function confetti(){
+ ["🎉","💖","✨","🎊"].forEach(()=>{
+  let c=document.createElement("div");
+  c.className="confetti";
+  c.innerText="🎉";
+  c.style.left=Math.random()*100+"vw";
+  document.body.appendChild(c);
+  setTimeout(()=>c.remove(),3000);
+ });
+}
+function fireworks(){
+ for(let i=0;i<30;i++){
+  let f=document.createElement("div");
+  f.className="explode";
+  f.innerText="🎆";
+  f.style.left="50vw";f.style.top="50vh";
+  f.style.setProperty("--x",`${Math.random()*300-150}px`);
+  f.style.setProperty("--y",`${Math.random()*300-150}px`);
+  document.body.appendChild(f);
+  setTimeout(()=>f.remove(),1200);
+ }
+}
+
+// SCREENSHOT
+screenshotBtn.onclick=()=>{
+ html2canvas(document.body).then(c=>{
+  let a=document.createElement("a");
+  a.download="our_valentine_moment.png";
+  a.href=c.toDataURL();
+  a.click();
+ });
+};
+
+// SHARE
+shareBtn.onclick=()=>{
+ let txt=encodeURIComponent(
+  "💖 She said YES! 💖\nFrom clumsy smiles to baby acts — love won ❤️\n\n"+location.href
+ );
+ window.open("https://wa.me/?text="+txt,"_blank");
+};
+</script>
+</body>
+</html>
