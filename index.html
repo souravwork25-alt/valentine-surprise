@@ -11,7 +11,7 @@
     --glowSpeed:1.2s;
 }
 
-/* ============ BASE ============ */
+/* ===== BASE ===== */
 body{
     margin:0;
     min-height:100vh;
@@ -19,11 +19,11 @@ body{
     font-family:'Segoe UI',sans-serif;
     color:white;
     display:flex;
-    align-items:center;
     justify-content:center;
+    align-items:center;
     overflow:hidden;
-    transition:background 3s ease;
     padding:10px;
+    transition:background 3s ease;
 }
 
 button{
@@ -33,17 +33,14 @@ button{
     cursor:pointer;
     font-size:16px;
     margin:8px;
-    transition:transform .3s;
+    transition:transform .25s;
 }
 
-/* Force SAME initial size */
-#yesBtn, #noBtn {
+#yesBtn,#noBtn{
     min-width:140px;
 }
 
-button:hover{transform:scale(1.08)}
-
-/* ============ PASSWORD ============ */
+/* ===== PASSWORD ===== */
 #lockScreen{text-align:center}
 input{
     padding:14px;
@@ -51,25 +48,11 @@ input{
     border:none;
     font-size:16px;
     width:220px;
-    max-width:90%;
     text-align:center;
 }
-#hint{
-    margin-top:12px;
-    font-size:14px;
-    color:#ffe4ec;
-    opacity:0;
-    animation:hintFade 4s infinite;
-}
-@keyframes hintFade{
-    0%,100%{opacity:0}
-    20%,80%{opacity:1}
-}
-.cursor{animation:blink 1s infinite}
-@keyframes blink{50%{opacity:0}}
 #unlockBtn{background:var(--pink);color:white}
 
-/* ============ CARD ============ */
+/* ===== CARD ===== */
 .card{
     display:none;
     background:rgba(255,255,255,.18);
@@ -78,25 +61,29 @@ input{
     max-width:420px;
     width:100%;
     text-align:center;
-    position:relative;
-    overflow:hidden;
     box-shadow:0 15px 40px rgba(0,0,0,.3);
 }
 
-h1{font-size:clamp(22px,5vw,28px)}
+/* Buttons row (INITIAL STATE) */
+.buttons-row{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    position:relative;
+}
 
-#yesBtn{background:var(--pink);color:white;font-weight:bold}
-#noBtn{background:white;color:var(--pink);position:absolute}
-
-/* Kiss button */
-#kissBtn{
-    display:none;
-    background:#ff69b4;
+#yesBtn{
+    background:var(--pink);
     color:white;
     font-weight:bold;
 }
 
-/* ============ EFFECTS ============ */
+#noBtn{
+    background:white;
+    color:var(--pink);
+}
+
+/* ===== EFFECTS ===== */
 @keyframes shake{
     0%,100%{transform:translate(0)}
     25%{transform:translate(-2px,2px)}
@@ -113,18 +100,8 @@ h1{font-size:clamp(22px,5vw,28px)}
     to{box-shadow:0 0 30px rgba(255,46,99,1)}
 }
 
-.whisper{
-    position:absolute;
-    background:rgba(0,0,0,.6);
-    padding:6px 12px;
-    border-radius:20px;
-    font-size:12px;
-    opacity:0;
-    pointer-events:none;
-}
-
 .explode{
-    position:absolute;
+    position:fixed;
     font-size:22px;
     animation:explode 1.2s forwards;
 }
@@ -133,7 +110,7 @@ h1{font-size:clamp(22px,5vw,28px)}
     to{transform:translate(var(--x),var(--y)) scale(1.4);opacity:0}
 }
 
-/* ============ ENDING ============ */
+/* ===== ENDING ===== */
 #message,#counter,#finalMessage,#calmText,#thankYou{
     margin-top:12px;
     font-weight:bold;
@@ -144,10 +121,9 @@ h1{font-size:clamp(22px,5vw,28px)}
     background:linear-gradient(135deg,#ffd1dc,#ffb7c5);
 }
 
-/* ============ MOBILE ============ */
+/* ===== MOBILE ===== */
 @media(max-width:480px){
-    button{width:100%}
-    #noBtn{position:fixed}
+    .buttons-row{flex-direction:row}
 }
 </style>
 </head>
@@ -164,27 +140,28 @@ h1{font-size:clamp(22px,5vw,28px)}
     <h2>🔒 Secret Page</h2>
     <input id="password" type="password" placeholder="Enter password"><br>
     <button id="unlockBtn">Unlock ❤️</button>
-    <div id="hint">A secret only meant for us<span class="cursor">|</span></div>
-    <p id="error"></p>
 </div>
 
 <!-- CARD -->
 <div class="card" id="mainCard">
     <h1>Will you be my Valentine? 💖</h1>
 
-    <button id="yesBtn">Yes 💕</button>
-    <button id="noBtn">No 😢</button>
+    <!-- INITIAL SIDE-BY-SIDE -->
+    <div class="buttons-row" id="buttonRow">
+        <button id="yesBtn">Yes 💕</button>
+        <button id="noBtn">No 😢</button>
+    </div>
 
     <div id="message"></div>
     <div id="counter"></div>
     <div id="finalMessage"></div>
 
-    <button id="kissBtn">Kiss 😘</button>
+    <button id="kissBtn" style="display:none;background:#ff69b4;color:white;font-weight:bold">
+        Kiss 😘
+    </button>
 
     <div id="calmText">My heart is calm now ❤️</div>
     <div id="thankYou">Thank you for choosing me 🤍</div>
-
-    <div id="whisper" class="whisper">please don’t click me 🥺</div>
 </div>
 
 <script>
@@ -196,11 +173,11 @@ const lockScreen=document.getElementById("lockScreen");
 const mainCard=document.getElementById("mainCard");
 const unlockBtn=document.getElementById("unlockBtn");
 const passwordInput=document.getElementById("password");
-const error=document.getElementById("error");
 
 const yesBtn=document.getElementById("yesBtn");
 const noBtn=document.getElementById("noBtn");
 const kissBtn=document.getElementById("kissBtn");
+const buttonRow=document.getElementById("buttonRow");
 
 const message=document.getElementById("message");
 const counter=document.getElementById("counter");
@@ -211,7 +188,6 @@ const thankYou=document.getElementById("thankYou");
 const bgMusic=document.getElementById("bgMusic");
 const heartbeat=document.getElementById("heartbeat");
 const yesSound=document.getElementById("yesSound");
-const whisper=document.getElementById("whisper");
 
 /* ===== UNLOCK ===== */
 unlockBtn.onclick=()=>{
@@ -219,22 +195,30 @@ unlockBtn.onclick=()=>{
   lockScreen.style.display="none";
   mainCard.style.display="block";
   bgMusic.play();
- }else error.innerText="Wrong password 😜";
+ }
 };
 
-/* ===== NO BUTTON ===== */
+/* ===== NO BUTTON LOGIC ===== */
 const noTexts=[
  "No 😢","Are you sure?","Really?","Think again 😳",
  "Pleaseeee 🥺","Don’t break my heart 💔","Okay fine… YES is better 😌"
 ];
-let noIndex=0,escapeCount=0,yesScale=1;
+let noIndex=0,escapeCount=0,noDetached=false,yesScale=1;
 
 function moveNo(){
  escapeCount++;
 
- const r=mainCard.getBoundingClientRect();
- noBtn.style.left=Math.random()*(r.width-noBtn.offsetWidth-10)+"px";
- noBtn.style.top=Math.random()*(r.height-noBtn.offsetHeight-10)+"px";
+ /* Detach NO after first click */
+ if(!noDetached){
+  noDetached=true;
+  noBtn.style.position="fixed";
+  document.body.appendChild(noBtn);
+ }
+
+ const maxX=window.innerWidth-noBtn.offsetWidth-10;
+ const maxY=window.innerHeight-noBtn.offsetHeight-10;
+ noBtn.style.left=Math.random()*maxX+"px";
+ noBtn.style.top=Math.random()*maxY+"px";
 
  if(noIndex<noTexts.length-1){
   noIndex++; noBtn.innerText=noTexts[noIndex];
@@ -242,7 +226,6 @@ function moveNo(){
 
  counter.innerText=`No escaped ${escapeCount} times 😄`;
 
- /* YES grows ONLY after first NO */
  if(escapeCount>1){
   yesScale+=0.15;
   yesBtn.style.transform=`scale(${yesScale})`;
@@ -260,14 +243,16 @@ function moveNo(){
   noBtn.disabled=true;
   noBtn.style.opacity=.6;
  }
-
- whisper.style.opacity=1;
- setTimeout(()=>whisper.style.opacity=0,800);
 }
 
-noBtn.onmouseenter=moveNo;
-noBtn.ontouchstart=e=>{e.preventDefault();moveNo();};
-noBtn.onclick=moveNo;
+/* Desktop hover */
+noBtn.addEventListener("mouseenter",moveNo);
+
+/* Mobile tap */
+noBtn.addEventListener("touchstart",e=>{
+ e.preventDefault();
+ moveNo();
+});
 
 /* ===== YES ===== */
 yesBtn.onclick=()=>{
@@ -285,7 +270,7 @@ yesBtn.onclick=()=>{
  finalMessage.innerText="You never really had a choice 😘";
 };
 
-/* ===== KISS (FINAL FLOW) ===== */
+/* ===== KISS ===== */
 let whatsappOpened=false;
 kissBtn.onclick=()=>{
  kissBtn.disabled=true;
@@ -296,7 +281,8 @@ kissBtn.onclick=()=>{
   const h=document.createElement("div");
   h.className="explode";
   h.innerText="💖";
-  h.style.left="50vw";h.style.top="60vh";
+  h.style.left="50vw";
+  h.style.top="60vh";
   h.style.setProperty("--x",`${Math.random()*200-100}px`);
   h.style.setProperty("--y",`${Math.random()*200-100}px`);
   document.body.appendChild(h);
