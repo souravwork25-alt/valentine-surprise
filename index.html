@@ -20,7 +20,7 @@ body{
     overflow:hidden;
 }
 
-/* ---------- PASSWORD ---------- */
+/* PASSWORD */
 #lockScreen{text-align:center}
 input{
     padding:14px;border-radius:20px;border:none;font-size:16px;
@@ -34,7 +34,7 @@ button{
 button:hover{transform:scale(1.08)}
 #unlockBtn{background:var(--pink);color:white}
 
-/* ---------- CARD ---------- */
+/* CARD */
 .card{
     display:none;
     background:rgba(255,255,255,.18);
@@ -50,7 +50,7 @@ h1{font-size:clamp(22px,5vw,28px)}
 #yesBtn{background:var(--pink);color:white;font-weight:bold}
 #noBtn{background:white;color:var(--pink);position:absolute}
 
-/* ---------- EXTRA ---------- */
+/* EXTRA */
 #kissBtn,#screenshotBtn,#shareBtn{display:none;color:white;font-weight:bold}
 #kissBtn{background:#ff69b4}
 #screenshotBtn{background:#6a5acd;width:100%}
@@ -61,7 +61,7 @@ h1{font-size:clamp(22px,5vw,28px)}
     margin-top:10px;font-weight:bold;color:#fffacd;
 }
 
-/* ---------- HEARTS ---------- */
+/* HEARTS */
 .heart{
     position:absolute;bottom:-20px;
     animation:floatUp 6s linear infinite;
@@ -71,7 +71,7 @@ h1{font-size:clamp(22px,5vw,28px)}
     to{transform:translateY(-120vh);opacity:0}
 }
 
-/* ---------- EXPLOSIONS ---------- */
+/* EXPLOSIONS */
 .explode{
     position:absolute;font-size:22px;
     animation:explode 1.2s ease-out forwards;
@@ -84,7 +84,7 @@ h1{font-size:clamp(22px,5vw,28px)}
     }
 }
 
-/* ---------- NO BUTTON FX ---------- */
+/* NO BUTTON FX */
 @keyframes shake{
     0%,100%{transform:translate(0)}
     25%{transform:translate(-2px,2px)}
@@ -103,13 +103,11 @@ h1{font-size:clamp(22px,5vw,28px)}
     pointer-events:none;
 }
 
-/* ---------- BLUSH ---------- */
+/* BLUSH */
 .blush{animation:blush .3s}
-@keyframes blush{
-    50%{background:#ffb6c1}
-}
+@keyframes blush{50%{background:#ffb6c1}}
 
-/* ---------- YES CENTER ---------- */
+/* YES CENTER */
 .centered{
     position:fixed!important;
     left:50%!important;
@@ -118,7 +116,7 @@ h1{font-size:clamp(22px,5vw,28px)}
     z-index:999;
 }
 
-/* ---------- CONFETTI ---------- */
+/* CONFETTI */
 .confetti{
     position:fixed;top:-10px;
     animation:fall 3s linear forwards;
@@ -127,7 +125,7 @@ h1{font-size:clamp(22px,5vw,28px)}
     to{transform:translateY(110vh) rotate(720deg);opacity:0}
 }
 
-/* ---------- LOVE NOTE ---------- */
+/* LOVE NOTE */
 #loveNote{
     display:none;
     margin-top:20px;
@@ -190,18 +188,37 @@ h1{font-size:clamp(22px,5vw,28px)}
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
-const PASSWORD="forever_02";
-const lockScreen=lockScreen, mainCard=mainCard, music=bgMusic;
+const PASSWORD="Us_1402";
 
+/* ELEMENTS */
+const lockScreen=document.getElementById("lockScreen");
+const mainCard=document.getElementById("mainCard");
+const unlockBtn=document.getElementById("unlockBtn");
+const passwordInput=document.getElementById("password");
+const error=document.getElementById("error");
+const music=document.getElementById("bgMusic");
+
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const whisper=document.getElementById("whisper");
+const counter=document.getElementById("counter");
+const finalMessage=document.getElementById("finalMessage");
+const message=document.getElementById("message");
+const kissBtn=document.getElementById("kissBtn");
+const screenshotBtn=document.getElementById("screenshotBtn");
+const shareBtn=document.getElementById("shareBtn");
+const loveNote=document.getElementById("loveNote");
+
+/* UNLOCK */
 unlockBtn.onclick=()=>{
- if(password.value===PASSWORD){
+ if(passwordInput.value===PASSWORD){
   lockScreen.style.display="none";
   mainCard.style.display="block";
   music.play();
  }else error.innerText="Wrong password 😜";
 };
 
-// Floating hearts
+/* FLOATING HEARTS */
 setInterval(()=>{
  let h=document.createElement("div");
  h.className="heart";h.innerText="❤️";
@@ -210,24 +227,22 @@ setInterval(()=>{
  setTimeout(()=>h.remove(),6000);
 },450);
 
-// NO BUTTON BEHAVIOR
+/* NO BUTTON */
 let escapeCount=0, yesScale=1;
 function moveNo(){
  escapeCount++;
  document.body.classList.add("blush");
  setTimeout(()=>document.body.classList.remove("blush"),300);
 
- const maxX=innerWidth-noBtn.offsetWidth-10;
- const maxY=innerHeight-noBtn.offsetHeight-10;
- noBtn.style.left=Math.random()*maxX+"px";
- noBtn.style.top=Math.random()*maxY+"px";
+ noBtn.style.left=Math.random()*(innerWidth-120)+"px";
+ noBtn.style.top=Math.random()*(innerHeight-120)+"px";
 
  whisper.style.opacity=1;
  setTimeout(()=>whisper.style.opacity=0,800);
 
  counter.innerText=`No escaped ${escapeCount} times 😄`;
 
- yesScale+=.15;
+ yesScale+=0.15;
  yesBtn.style.transform=`scale(${yesScale})`;
 
  if(escapeCount>=2) noBtn.classList.add("nervous");
@@ -237,9 +252,9 @@ noBtn.onmouseenter=moveNo;
 noBtn.ontouchstart=e=>{e.preventDefault();moveNo();};
 noBtn.onclick=moveNo;
 
-// YES CLICK
+/* YES CLICK */
 yesBtn.onclick=()=>{
- question.innerText="SHE SAID YES!!! 💖🥹";
+ document.getElementById("question").innerText="SHE SAID YES!!! 💖🥹";
  message.innerHTML=`I fell in love with your clumsiness,<br>
  your baby acts, and your heart ❤️<br><br>
  <b>💖 She said YES on:</b><br>${new Date().toLocaleString()}`;
@@ -247,56 +262,25 @@ yesBtn.onclick=()=>{
  noBtn.style.display="none";
  kissBtn.style.display=screenshotBtn.style.display=shareBtn.style.display="inline-block";
  finalMessage.innerText="You never really had a choice 😘";
- confetti();fireworks();
  navigator.vibrate?.([200,100,200,300]);
 };
 
-// KISS
-kissBtn.onclick=()=>{
- message.innerHTML+="<br><br><b>*Kiss received!* 💋❤️</b>";
- navigator.vibrate?.(300);
-};
-
-// LONG PRESS LOVE NOTE
+/* LONG PRESS LOVE NOTE */
 let pressTimer;
-["mousedown","touchstart"].forEach(e=>
- yesBtn.addEventListener(e,ev=>{
-  ev.preventDefault();
-  pressTimer=setTimeout(()=>{
-    loveNote.style.display="block";
-    navigator.vibrate?.([100,50,200]);
-  },1000);
- })
-);
-["mouseup","mouseleave","touchend"].forEach(e=>
- yesBtn.addEventListener(e,()=>clearTimeout(pressTimer))
-);
-
-// CONFETTI & FIREWORKS
-function confetti(){
- ["🎉","💖","✨","🎊"].forEach(()=>{
-  let c=document.createElement("div");
-  c.className="confetti";
-  c.innerText="🎉";
-  c.style.left=Math.random()*100+"vw";
-  document.body.appendChild(c);
-  setTimeout(()=>c.remove(),3000);
- });
+yesBtn.addEventListener("mousedown",startPress);
+yesBtn.addEventListener("touchstart",startPress);
+function startPress(e){
+ e.preventDefault();
+ pressTimer=setTimeout(()=>{
+  loveNote.style.display="block";
+  navigator.vibrate?.([100,50,200]);
+ },1000);
 }
-function fireworks(){
- for(let i=0;i<30;i++){
-  let f=document.createElement("div");
-  f.className="explode";
-  f.innerText="🎆";
-  f.style.left="50vw";f.style.top="50vh";
-  f.style.setProperty("--x",`${Math.random()*300-150}px`);
-  f.style.setProperty("--y",`${Math.random()*300-150}px`);
-  document.body.appendChild(f);
-  setTimeout(()=>f.remove(),1200);
- }
-}
+["mouseup","mouseleave","touchend"].forEach(ev=>{
+ yesBtn.addEventListener(ev,()=>clearTimeout(pressTimer));
+});
 
-// SCREENSHOT
+/* SCREENSHOT */
 screenshotBtn.onclick=()=>{
  html2canvas(document.body).then(c=>{
   let a=document.createElement("a");
@@ -306,7 +290,7 @@ screenshotBtn.onclick=()=>{
  });
 };
 
-// SHARE
+/* SHARE */
 shareBtn.onclick=()=>{
  let txt=encodeURIComponent(
   "💖 She said YES! 💖\nFrom clumsy smiles to baby acts — love won ❤️\n\n"+location.href
@@ -314,5 +298,6 @@ shareBtn.onclick=()=>{
  window.open("https://wa.me/?text="+txt,"_blank");
 };
 </script>
+
 </body>
 </html>
